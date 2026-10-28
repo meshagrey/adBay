@@ -1,0 +1,258 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --font-sans: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    
+    /* Strict 13px base body text rule */
+    --font-size-body: 13px;
+    --line-height-body: 1.45;
+    
+    /* Strict 5px spacing rule */
+    --space-gap: 5px;
+    --space-item: 5px;
+    --radius-sm: 4px;
+    --radius-md: 7px;
+    --radius-card: 7px;
+    --radius-lg: 8px;
+
+    /* adBay Kenya Brand Colors: Vibrant Green #00A859 with contrasting warm Amber/Orange #F59E0B */
+    --color-primary: #00A859;
+    --color-primary-hover: #00924c;
+    --color-primary-light: #e6f7ef;
+    --color-primary-dark: #00703c;
+    --color-accent: #F59E0B;
+    --color-accent-hover: #d97706;
+    
+    /* Light Theme Palette */
+    --bg-page: #f8fafc;
+    --bg-surface: #ffffff;
+    --bg-surface-subtle: #f1f5f9;
+    --bg-surface-elevated: #ffffff;
+    --border-color: #e2e8f0;
+    --border-subtle: #edf2f7;
+    --text-main: #0f172a;
+    --text-muted: #64748b;
+    --text-faint: #94a3b8;
+    --card-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --badge-bg: #f1f5f9;
+  }
+
+  .dark {
+    /* Dark Theme Palette */
+    --color-primary: #10b981;
+    --color-primary-hover: #059669;
+    --color-primary-light: #064e3b;
+    --color-primary-dark: #047857;
+    --color-accent: #fbbf24;
+    --color-accent-hover: #f59e0b;
+
+    --bg-page: #0b1120;
+    --bg-surface: #131c31;
+    --bg-surface-subtle: #1e293b;
+    --bg-surface-elevated: #1e293b;
+    --border-color: #27354f;
+    --border-subtle: #1e293b;
+    --text-main: #f1f5f9;
+    --text-muted: #94a3b8;
+    --text-faint: #64748b;
+    --card-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.4);
+    --badge-bg: #1e293b;
+  }
+
+  html {
+    font-family: var(--font-sans);
+    font-size: var(--font-size-body);
+    line-height: var(--line-height-body);
+    color: var(--text-main);
+    background-color: var(--bg-page);
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    font-size: 13px !important;
+    line-height: 1.45;
+    background-color: var(--bg-page);
+    color: var(--text-main);
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Smooth cross-fade CSS transition for theme switching */
+  html,
+  body,
+  header,
+  footer,
+  nav,
+  aside,
+  main,
+  section,
+  article,
+  div:not([data-no-theme-transition]),
+  button:not([data-no-theme-transition]),
+  input,
+  select,
+  textarea,
+  .adbay-card {
+    transition: background-color 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+                color 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+                border-color 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  p, span, div, li, input, textarea, select, button {
+    font-family: inherit;
+  }
+
+  /* Ensure body text stays strictly 13px across devices */
+  .adbay-body,
+  p:not(.text-xs):not(.text-sm):not(.text-base):not(.text-lg):not(.text-xl):not(.text-2xl) {
+    font-size: 13px !important;
+    line-height: 1.45;
+  }
+}
+
+/* Mobile theme: 99.5% screen width requirement and strict mobile styling */
+@media (max-width: 767px) {
+  .max-w-7xl,
+  .max-w-\[1600px\],
+  .max-w-\[1250px\],
+  .adbay-mobile-full,
+  main > div,
+  header > div {
+    width: 99.5% !important;
+    max-width: 99.5% !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    padding-left: 2px !important;
+    padding-right: 2px !important;
+  }
+
+  /* MOBILE VERSION: Border margin 1px; spacing 5px; 7px card radius */
+  .adbay-card {
+    border-radius: 7px !important;
+  }
+
+  .adbay-mobile-item,
+  article,
+  button,
+  input,
+  select,
+  textarea {
+    border-radius: 5px !important;
+  }
+
+  .adbay-mobile-border-margin {
+    margin: 1px !important;
+  }
+
+  /* MOBILE VERSION: Base body text is 11px */
+  body,
+  p,
+  li,
+  label,
+  input,
+  select,
+  textarea,
+  .adbay-mobile-body,
+  article p,
+  div.adbay-card p,
+  span.adbay-body,
+  span:not(.adbay-mobile-logo):not(.adbay-mobile-logo span):not(.adbay-mobile-heading):not(.adbay-mobile-title),
+  a:not(.adbay-mobile-heading):not(.adbay-mobile-title),
+  button:not(.adbay-mobile-heading):not(.adbay-mobile-title) {
+    font-size: 11px !important;
+    line-height: 1.35 !important;
+  }
+
+  /* MOBILE VERSION: Heading text is 12px (excluding unbolded listing card titles) */
+  h1, h2, h3, h5, h6,
+  h4:not(.adbay-listing-title),
+  .adbay-mobile-heading,
+  .adbay-mobile-title {
+    font-size: 12px !important;
+    line-height: 1.3 !important;
+    font-weight: 700 !important;
+  }
+
+  /* Listing card titles: strictly unbold (400 weight), 11px on mobile */
+  .adbay-listing-title,
+  h4.adbay-listing-title {
+    font-size: 11px !important;
+    font-weight: 400 !important;
+    line-height: 1.35 !important;
+  }
+
+  /* Prominent mobile logo font */
+  .adbay-mobile-logo,
+  .adbay-mobile-logo span {
+    font-size: 20px !important;
+    line-height: 1 !important;
+    font-weight: 900 !important;
+  }
+
+  /* Content safe-area so final listing cards remain fully accessible */
+  main {
+    padding-bottom: 78px !important;
+  }
+}
+
+/* Listing card titles on desktop: 12px, weight 400-500 */
+@media (min-width: 768px) {
+  .adbay-listing-title,
+  h4.adbay-listing-title {
+    font-size: 12px !important;
+    font-weight: 400 !important;
+    line-height: 1.4 !important;
+  }
+}
+
+/* Strict 5px grid and flex gap rules */
+.adbay-grid-5 {
+  display: grid;
+  gap: 5px;
+}
+
+.adbay-gap-5 {
+  gap: 5px;
+}
+
+.adbay-card {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  box-shadow: var(--card-shadow);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.1s ease,
+              background-color 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+              color 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.adbay-card:hover {
+  border-color: var(--color-primary);
+}
+
+/* Custom scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #334155;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}

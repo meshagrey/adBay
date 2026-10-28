@@ -1,0 +1,139 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "Registered buyer, seller, business merchant or administrator on adBay",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique Firebase user UID" },
+        "name": { "type": "string", "maxLength": 100, "description": "Full name or business display name" },
+        "email": { "type": "string", "format": "email", "maxLength": 120, "description": "Primary email" },
+        "phone": { "type": "string", "maxLength": 30, "description": "Kenyan mobile number for M-Pesa & contacts" },
+        "avatar": { "type": "string", "maxLength": 500000, "description": "Avatar data URL or secure image link" },
+        "role": { "type": "string", "enum": ["buyer", "seller", "business", "admin", "guest"], "description": "RBAC user role" },
+        "isVerifiedBusiness": { "type": "boolean", "description": "Storefront verification flag" },
+        "status": { "type": "string", "enum": ["active", "suspended"], "description": "Account status" },
+        "county": { "type": "string", "maxLength": 60, "description": "Kenyan county" },
+        "town": { "type": "string", "maxLength": 80, "description": "Kenyan town or neighborhood" },
+        "createdAt": { "type": "string", "description": "Creation timestamp" },
+        "updatedAt": { "type": "string", "description": "Last update timestamp" }
+      },
+      "required": ["id", "name", "email", "role", "county", "town"]
+    },
+    "Listing": {
+      "title": "Listing",
+      "description": "Classified advertisement published on adBay Kenya",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique listing identifier" },
+        "title": { "type": "string", "minLength": 3, "maxLength": 150, "description": "Listing title" },
+        "description": { "type": "string", "maxLength": 4000, "description": "Full item description" },
+        "price": { "type": "number", "description": "Price in KES" },
+        "currency": { "type": "string", "maxLength": 10, "description": "KES currency" },
+        "category": { "type": "string", "maxLength": 50, "description": "Category slug" },
+        "subcategory": { "type": "string", "maxLength": 50, "description": "Subcategory slug" },
+        "county": { "type": "string", "maxLength": 60, "description": "County in Kenya" },
+        "town": { "type": "string", "maxLength": 80, "description": "Town in Kenya" },
+        "condition": { "type": "string", "enum": ["new", "used", "refurbished"], "description": "Item condition" },
+        "images": { "type": "array", "description": "Array of item photos" },
+        "sellerId": { "type": "string", "maxLength": 128, "description": "UID of the publishing seller" },
+        "sellerName": { "type": "string", "maxLength": 100, "description": "Seller display name" },
+        "sellerPhone": { "type": "string", "maxLength": 30, "description": "Seller contact number" },
+        "status": { "type": "string", "enum": ["active", "pending", "sold", "paused", "rejected"], "description": "Listing moderation/inventory status" },
+        "featured": { "type": "boolean", "description": "Featured status badge" },
+        "viewsCount": { "type": "number", "description": "View impressions count" },
+        "createdAt": { "type": "string", "description": "Publication timestamp" },
+        "updatedAt": { "type": "string", "description": "Update timestamp" }
+      },
+      "required": ["id", "title", "price", "category", "county", "town", "sellerId", "status"]
+    },
+    "Conversation": {
+      "title": "Conversation",
+      "description": "Direct inquiry chat between a buyer and seller regarding a listing",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Conversation ID" },
+        "listingId": { "type": "string", "maxLength": 128, "description": "Referenced listing ID" },
+        "listingTitle": { "type": "string", "maxLength": 150, "description": "Referenced listing title" },
+        "buyerId": { "type": "string", "maxLength": 128, "description": "Inquiring buyer UID" },
+        "buyerName": { "type": "string", "maxLength": 100, "description": "Buyer name" },
+        "sellerId": { "type": "string", "maxLength": 128, "description": "Seller UID" },
+        "sellerName": { "type": "string", "maxLength": 100, "description": "Seller name" },
+        "lastMessage": { "type": "string", "maxLength": 1000, "description": "Preview of latest text message" },
+        "lastMessageAt": { "type": "string", "description": "Timestamp of latest message" },
+        "createdAt": { "type": "string", "description": "Initiation timestamp" }
+      },
+      "required": ["id", "listingId", "buyerId", "sellerId"]
+    },
+    "Message": {
+      "title": "Message",
+      "description": "Individual message within a conversation",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Message ID" },
+        "conversationId": { "type": "string", "maxLength": 128, "description": "Parent conversation ID" },
+        "senderId": { "type": "string", "maxLength": 128, "description": "Message sender UID" },
+        "senderName": { "type": "string", "maxLength": 100, "description": "Message sender name" },
+        "text": { "type": "string", "maxLength": 2000, "description": "Message body" },
+        "createdAt": { "type": "string", "description": "Message send timestamp" },
+        "read": { "type": "boolean", "description": "Message read indicator" }
+      },
+      "required": ["id", "conversationId", "senderId", "text"]
+    },
+    "Report": {
+      "title": "Report",
+      "description": "Fraud, scam, or counterfeit report submitted by users",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Report ID" },
+        "targetType": { "type": "string", "enum": ["listing", "user"], "description": "Target entity type" },
+        "targetId": { "type": "string", "maxLength": 128, "description": "Target entity ID" },
+        "targetTitle": { "type": "string", "maxLength": 150, "description": "Target title" },
+        "reporterId": { "type": "string", "maxLength": 128, "description": "User reporting" },
+        "reason": { "type": "string", "maxLength": 100, "description": "Report category reason" },
+        "details": { "type": "string", "maxLength": 1000, "description": "Report explanation" },
+        "status": { "type": "string", "enum": ["pending", "resolved", "dismissed"], "description": "Investigation status" },
+        "createdAt": { "type": "string", "description": "Submission timestamp" }
+      },
+      "required": ["id", "targetId", "reporterId", "reason", "status"]
+    },
+    "PlatformSetting": {
+      "title": "PlatformSetting",
+      "description": "Global marketplace administrative settings",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Setting key identifier" },
+        "showEmergencyBanner": { "type": "boolean", "description": "Toggle safety banner" },
+        "emergencyBannerText": { "type": "string", "maxLength": 500, "description": "Safety announcement banner" },
+        "updatedAt": { "type": "string", "description": "Last modified timestamp" }
+      },
+      "required": ["id"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User accounts and merchant profiles"
+    },
+    "/listings/{listingId}": {
+      "schema": "Listing",
+      "description": "Public and pending classified ads"
+    },
+    "/conversations/{conversationId}": {
+      "schema": "Conversation",
+      "description": "Buyer-seller messaging threads"
+    },
+    "/conversations/{conversationId}/messages/{messageId}": {
+      "schema": "Message",
+      "description": "Messages inside conversation thread"
+    },
+    "/reports/{reportId}": {
+      "schema": "Report",
+      "description": "Fraud and suspicious listings reports"
+    },
+    "/settings/{settingId}": {
+      "schema": "PlatformSetting",
+      "description": "Global marketplace settings"
+    }
+  }
+}

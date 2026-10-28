@@ -1,0 +1,151 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Default-deny catch all
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Hardened Global Helpers
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() > 0 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    // Bootstrapped Administrator verification: checks user document role or designated developer email
+    function isAdmin() {
+      return isSignedIn() && (
+        (request.auth.token.email == 'n.meshagrey@gmail.com' && request.auth.token.email_verified == true) ||
+        (exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin')
+      );
+    }
+
+    // Validation: Users
+    function isValidUser(data) {
+      return data.id is string && data.id.size() <= 128 &&
+             data.name is string && data.name.size() > 0 && data.name.size() <= 100 &&
+             data.email is string && data.email.size() <= 120 &&
+             data.role in ['buyer', 'seller', 'business', 'admin', 'guest'] &&
+             data.county is string && data.county.size() <= 60 &&
+             data.town is string && data.town.size() <= 80;
+    }
+
+    // Validation: Listings
+    function isValidListing(data) {
+      return data.id is string && data.id.size() <= 128 &&
+             data.title is string && data.title.size() >= 3 && data.title.size() <= 150 &&
+             data.price is number && data.price >= 0 &&
+             data.category is string && data.category.size() <= 50 &&
+             data.county is string && data.county.size() <= 60 &&
+             data.town is string && data.town.size() <= 80 &&
+             data.sellerId is string && data.sellerId.size() <= 128 &&
+             data.status in ['active', 'pending', 'sold', 'paused', 'rejected'] &&
+             (!('description' in data) || (data.description is string && data.description.size() <= 4000)) &&
+             (!('images' in data) || (data.images is list && data.images.size() <= 15));
+    }
+
+    // Validation: Conversations
+    function isValidConversation(data) {
+      return data.id is string && data.id.size() <= 128 &&
+             data.listingId is string && data.listingId.size() <= 128 &&
+             data.buyerId is string && data.buyerId.size() <= 128 &&
+             data.sellerId is string && data.sellerId.size() <= 128;
+    }
+
+    // Validation: Messages
+    function isValidMessage(data) {
+      return data.id is string && data.id.size() <= 128 &&
+             data.conversationId is string && data.conversationId.size() <= 128 &&
+             data.senderId is string && data.senderId.size() <= 128 &&
+             data.text is string && data.text.size() > 0 && data.text.size() <= 2000;
+    }
+
+    // Validation: Reports
+    function isValidReport(data) {
+      return data.id is string && data.id.size() <= 128 &&
+             data.targetId is string && data.targetId.size() <= 128 &&
+             data.reporterId is string && data.reporterId.size() <= 128 &&
+             data.reason is string && data.reason.size() <= 100 &&
+             data.status in ['pending', 'resolved', 'dismissed'];
+    }
+
+    // USERS COLLECTION
+    match /users/{userId} {
+      allow get: if true;
+      allow list: if isAdmin();
+      allow create: if isSignedIn() && isValidId(userId) && request.auth.uid == userId && isValidUser(incoming());
+      allow update: if isSignedIn() && isValidId(userId) && (
+        isAdmin() ||
+        (request.auth.uid == userId && isValidUser(incoming()) && incoming().role == existing().role)
+      );
+      allow delete: if isAdmin();
+    }
+
+    // LISTINGS COLLECTION
+    match /listings/{listingId} {
+      allow get: if true;
+      allow list: if true;
+      allow create: if isSignedIn() && isValidId(listingId) && isValidListing(incoming()) && incoming().sellerId == request.auth.uid;
+      allow update: if isSignedIn() && isValidId(listingId) && isValidListing(incoming()) && (
+        isAdmin() ||
+        (existing().sellerId == request.auth.uid && incoming().sellerId == existing().sellerId)
+      );
+      allow delete: if isSignedIn() && isValidId(listingId) && (isAdmin() || existing().sellerId == request.auth.uid);
+    }
+
+    // CONVERSATIONS COLLECTION
+    match /conversations/{conversationId} {
+      allow get: if isSignedIn() && isValidId(conversationId) && (
+        isAdmin() || existing().buyerId == request.auth.uid || existing().sellerId == request.auth.uid
+      );
+      allow list: if isSignedIn() && (
+        resource.data.buyerId == request.auth.uid || resource.data.sellerId == request.auth.uid || isAdmin()
+      );
+      allow create: if isSignedIn() && isValidId(conversationId) && isValidConversation(incoming()) && (
+        incoming().buyerId == request.auth.uid || incoming().sellerId == request.auth.uid
+      );
+      allow update: if isSignedIn() && isValidId(conversationId) && (
+        isAdmin() || existing().buyerId == request.auth.uid || existing().sellerId == request.auth.uid
+      );
+      allow delete: if isAdmin();
+
+      // MESSAGES SUBCOLLECTION
+      match /messages/{messageId} {
+        allow get: if isSignedIn() && isValidId(messageId);
+        allow list: if isSignedIn();
+        allow create: if isSignedIn() && isValidId(messageId) && isValidMessage(incoming()) && incoming().senderId == request.auth.uid;
+        allow update: if isSignedIn() && isValidId(messageId) && (isAdmin() || incoming().senderId == request.auth.uid);
+        allow delete: if isAdmin();
+      }
+    }
+
+    // REPORTS COLLECTION
+    match /reports/{reportId} {
+      allow get: if isAdmin() || (isSignedIn() && existing().reporterId == request.auth.uid);
+      allow list: if isAdmin();
+      allow create: if isSignedIn() && isValidId(reportId) && isValidReport(incoming()) && incoming().reporterId == request.auth.uid;
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // SETTINGS COLLECTION
+    match /settings/{settingId} {
+      allow get: if true;
+      allow list: if true;
+      allow create, update, delete: if isAdmin();
+    }
+  }
+}

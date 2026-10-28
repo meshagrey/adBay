@@ -1,0 +1,6 @@
+{
+  "name": "adBay",
+  "description": "adBay - Buy and Sell Online. Kenya's modern, lightweight classifieds marketplace for phones, electronics, vehicles, property, and more.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="adBayGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00C853" />
+      <stop offset="100%" stop-color="#007E33" />
+    </linearGradient>
+    <linearGradient id="accentGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFD54F" />
+      <stop offset="100%" stop-color="#FF9800" />
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#000000" flood-opacity="0.2" />
+    </filter>
+  </defs>
+
+  <!-- Background rounded rect -->
+  <rect width="512" height="512" rx="108" fill="url(#adBayGrad)" />
+
+  <!-- Inner glowing badge -->
+  <g filter="url(#shadow)">
+    <!-- Shopping Tag / Marketplace badge -->
+    <path d="M120 180 C120 150 144 126 174 126 L290 126 C304 126 318 132 328 142 L402 216 C422 236 422 268 402 288 L314 376 C294 396 262 396 242 376 L134 268 C125 259 120 246 120 234 Z" 
+          fill="#FFFFFF" />
+          
+    <!-- Tag eyelet -->
+    <circle cx="190" cy="190" r="24" fill="#007E33" />
+    <circle cx="190" cy="190" r="12" fill="#FFFFFF" />
+
+    <!-- "ad" text in green and "Bay" in vibrant amber -->
+    <path d="M260 270 Q275 235 305 235 Q335 235 335 270 Q335 305 305 305 Q275 305 260 270 Z" fill="none" stroke="url(#accentGrad)" stroke-width="14" stroke-linecap="round" />
+    <circle cx="335" cy="245" r="12" fill="url(#accentGrad)" />
+
+    <!-- adBay "B" spark -->
+    <path d="M230 330 L270 330 C290 330 305 318 305 300 C305 288 296 280 285 276 C294 272 300 264 300 252 C300 236 288 226 270 226 L230 226 Z" fill="#007E33" />
+    <rect x="250" y="244" width="22" height="18" rx="4" fill="#FFFFFF" />
+    <rect x="250" y="280" width="28" height="22" rx="4" fill="#FFFFFF" />
+  </g>
+
+  <!-- Distinctive "adBay" bottom text badge -->
+  <text x="256" y="450" 
+        font-family="Poppins, Arial, sans-serif" 
+        font-size="52" 
+        font-weight="800" 
+        letter-spacing="-1.5" 
+        text-anchor="middle" 
+        fill="#FFFFFF">
+    ad<tspan fill="#FFD54F">Bay</tspan>
+  </text>
+</svg>

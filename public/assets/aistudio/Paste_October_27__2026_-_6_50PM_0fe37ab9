@@ -1,0 +1,892 @@
+# MASTER DEVELOPMENT PROMPT: adBay — Advanced Kenyan Classifieds Marketplace
+
+## 1. PROJECT OVERVIEW
+
+Upgrade my existing application, **adBay**, into a professional, production-ready Kenyan online classifieds marketplace inspired by the usability and breadth of Jiji Kenya, but with its own branding, design system, and implementation.
+
+The existing application is already partially developed. Preserve its working features, existing project structure, useful components, and stored data. Inspect the existing codebase before making changes.
+
+Do not rebuild the project from scratch unless technically necessary. Do not replace working functionality with static mockups, hardcoded examples, or nonfunctional buttons.
+
+The objective is to deliver a fully functional marketplace with advanced administration, dynamic role-based dashboards, secure permission enforcement, comprehensive listing management, buyer–seller messaging, and a responsive user experience.
+
+Brand name: **adBay**
+
+Tagline: **Buy and Sell Online**
+
+Primary market: Kenya.
+
+Currency: Kenyan shillings (KES).
+
+Geographic coverage: All 47 counties in Kenya.
+
+Primary objectives:
+
+- Make buying and selling simple and trustworthy.
+- Improve the existing UI/UX and responsive layout.
+- Give each user a dashboard tailored to their role and permissions.
+- Implement a comprehensive administrative control panel.
+- Enforce a strict role hierarchy and secure authorization.
+- Support products, vehicles, property, jobs, and services.
+- Create maintainable, modular, scalable application architecture.
+
+## 2. MANDATORY DESIGN SYSTEM AND SPACING RULES
+
+These rules are mandatory throughout the entire application.
+
+### 2.1 Consistent spacing
+
+Use a consistent base spacing system of **5px**, with a standard margin utility of **3px**, across all pages, components, and responsive breakpoints.
+
+Interpretation:
+
+- Base spacing unit: 5px.
+- Standard margin utility: 3px.
+- Use multiples of 5px for the main layout spacing scale: 5px, 10px, 15px, 20px, 25px, 30px, and 40px.
+- Use 3px for the standard micro-margin utility where appropriate.
+- Apply the system consistently to headers, navigation, forms, dashboard cards, product grids, dropdowns, modals, buttons, tables, and mobile layouts.
+- Avoid arbitrary, unrelated margin and padding values.
+- Do not allow individual pages to introduce conflicting spacing conventions.
+- Use shared design tokens and reusable spacing utilities.
+
+If using CSS, define centralized variables and utilities. For example:
+
+&#x20;{
+\--spacing-unit: 5px;
+\--space-1: 5px;
+\--space-2: 10px;
+\--space-3: 15px;
+\--space-4: 20px;
+\--space-5: 25px;
+\--space-6: 30px;
+\--space-8: 40px;
+\--standard-margin: 3px;
+}
+
+Use these tokens consistently throughout the application. Do not confuse the 3px standard margin utility with the 5px base spacing scale.
+
+Use responsive container widths and fluid layouts while retaining the spacing system.
+
+### 2.2 Brand identity
+
+Preserve and refine adBay's green-and-orange branding.
+
+Use this initial design palette:
+
+- Primary green: #00A859.
+- Action orange: #FF9F0A.
+- Page background: #F5F7FA.
+- Card background: #FFFFFF.
+- Primary text: #172033.
+- Secondary text: #64748B.
+- Border: #E2E8F0.
+- Error: #DC2626.
+- Warning: #D97706.
+- Success: #16A34A.
+
+Centralize colors in design tokens. Validate text and control contrast for accessibility.
+
+Use green for primary marketplace actions, active navigation, success indicators, and positive states.
+
+Reserve orange for the main "Post an Ad" action, important promotions, and selected attention-grabbing elements.
+
+Avoid excessive badges, decorative colors, heavy shadows, inconsistent border radii, and unnecessary animations.
+
+### 2.3 Typography
+
+Use a consistent modern font such as Inter or a comparable system font.
+
+Recommended hierarchy:
+
+- Main page headings: 24–32px.
+- Section headings: 18–22px.
+- Body text: 14–16px.
+- Secondary metadata: 12–13px.
+- Buttons and navigation: 14–15px.
+
+Maintain readable line heights, clear labels, and consistent font weights.
+
+### 2.4 Layout and responsiveness
+
+Fix the current dashboard's excessive empty space and cramped header.
+
+Use:
+
+- A centered desktop content container with a maximum width of approximately 1,200–1,280px.
+- Responsive product grids with 2–4 columns depending on available width.
+- Compact but readable headers.
+- Consistent card dimensions and image aspect ratios.
+- Proper alignment of dashboard statistics and action buttons.
+- Mobile-first layouts.
+- Responsive navigation and accessible dropdowns.
+
+Test the application at 360px, 390px, 768px, 1024px, 1280px, and 1440px viewport widths.
+
+No horizontal overflow, clipped controls, overlapping dropdowns, or inaccessible navigation should remain.
+
+## 3. USER ROLES AND PERMISSION HIERARCHY
+
+Implement a secure role-based access control system.
+
+Use the following roles, with permissions granted explicitly rather than inferred from the visibility of interface elements.
+
+### Level 0: Guest
+
+Permissions:
+
+- Browse public advertisements.
+- Search and filter listings.
+- View public seller profiles.
+- View permitted public business information.
+- Register and sign in.
+- Access public safety information.
+
+Restrictions:
+
+- Cannot publish advertisements.
+- Cannot access private dashboards.
+- Cannot access private inquiries.
+- Cannot view other users' personal information.
+
+### Level 1: Buyer
+
+Permissions:
+
+- Maintain a personal profile.
+- Save and unsave advertisements.
+- Contact sellers through the messaging system.
+- View personal inquiries and conversations.
+- Report suspicious advertisements.
+- Manage notification preferences.
+- View recently viewed advertisements if supported.
+
+Restrictions:
+
+- Cannot manage other users' advertisements.
+- Cannot access seller inventory management unless granted the seller capability.
+- Cannot access administrative functions.
+
+### Level 2: Seller
+
+Includes registered buyer capabilities.
+
+Additional permissions:
+
+- Create, edit, submit, pause, renew, and remove their own advertisements, subject to publication rules.
+- Manage their own inventory.
+- Upload listing images.
+- Respond to inquiries.
+- View listing performance analytics.
+- Manage seller profile information.
+- Purchase or activate permitted promotional packages.
+- Manage their own reviews and seller reputation features where implemented.
+
+Restrictions:
+
+- Cannot modify another seller's listings.
+- Cannot approve their own listings if independent moderation is required.
+- Cannot access business-only functionality without the appropriate capability.
+- Cannot access administrative tools.
+
+### Level 3: Business
+
+Includes individual seller capabilities.
+
+Additional permissions:
+
+- Maintain a business profile and storefront.
+- Upload business branding and permitted verification documents.
+- Manage multiple listings.
+- Organize inventory and listing categories.
+- Access business performance analytics.
+- Manage permitted business team members and staff roles if the existing architecture supports them.
+- Access business-specific promotional packages.
+- View relevant business inquiry and lead statistics.
+- Manage business contact information and operating hours.
+
+Restrictions:
+
+- Cannot access system administration.
+- Cannot verify their own business status.
+- Cannot bypass moderation, listing quotas, or platform rules.
+- Cannot access another business's private records.
+
+### Level 4: Moderator / Support Agent
+
+Create this as an explicit operational role, not an automatic administrator privilege.
+
+Permissions:
+
+- Review flagged listings and reports.
+- Approve or reject advertisements within assigned moderation scope.
+- Request listing edits.
+- Handle user complaints and support tickets.
+- Apply documented moderation actions.
+- View the minimum account information necessary for assigned tasks.
+- Record decisions and reasons in an audit trail.
+
+Restrictions:
+
+- Cannot manage system configuration.
+- Cannot assign administrator roles.
+- Cannot access financial administration unless explicitly authorized.
+- Cannot change their own permissions.
+
+### Level 5: Administrator
+
+Permissions:
+
+- Access the administrative dashboard.
+- Manage users and account statuses.
+- Manage advertisements and moderation queues.
+- Manage categories and subcategories.
+- Configure approved listing policies.
+- Manage reports, disputes, and support workflows.
+- Review marketplace analytics.
+- Manage approved promotional packages.
+- Manage platform content and announcements.
+- Access audit logs and operational reports.
+- Manage designated marketplace settings.
+- Manage approved integrations within their authorization scope.
+
+Restrictions:
+
+- Cannot access unrestricted owner-only functions.
+- Cannot bypass immutable audit requirements.
+- Cannot expose credentials or secrets through the interface.
+- Sensitive actions require explicit confirmation and appropriate reauthentication where applicable.
+
+### Level 6: Super Administrator / Platform Owner
+
+Highest privileged role.
+
+Permissions:
+
+- Manage administrators and moderators.
+- Assign and revoke authorized roles.
+- Configure granular permissions.
+- Configure platform-wide settings.
+- Manage security policies and authentication settings.
+- Review administrative audit logs.
+- Configure categories, quotas, moderation rules, and permitted integrations.
+- Manage system-wide feature flags.
+- Access protected platform-wide analytics.
+- Manage operational recovery and approved maintenance functions.
+
+Restrictions:
+
+- Never expose raw secrets, passwords, private keys, or payment credentials.
+- Preserve security logging and accountability.
+- Require strong authentication for sensitive operations.
+- Do not provide direct database access through an ordinary web dashboard.
+- Make destructive actions reversible where technically feasible.
+
+## 4. ROLE-BASED DASHBOARD ARCHITECTURE
+
+Create a distinct dashboard experience for each role.
+
+Do not show every feature to every user and merely disable unauthorized controls.
+
+Hide inaccessible navigation items and actions by default. If an action is intentionally displayed but unavailable, explain why.
+
+The backend must independently enforce every permission. Hiding a button is not authorization.
+
+### Buyer dashboard
+
+Display:
+
+- Saved advertisements.
+- Recent inquiries.
+- Active conversations.
+- Recently viewed advertisements.
+- Account profile completion.
+- Notification center.
+- Safety tips.
+- Quick links to search, saved ads, and messages.
+
+### seller dashboard
+
+Display:
+
+- Total advertisements.
+- Active, pending, rejected, expired, and paused listings.
+- Total views and inquiries.
+- Saved or favorited listing statistics where available.
+- Recent buyer inquiries.
+- Listing performance.
+- Listing renewal reminders.
+- Create advertisement button.
+- Edit inventory and profile shortcuts.
+
+### Business dashboard
+
+Display:
+
+- Business overview.
+- Storefront status.
+- Total active inventory.
+- Pending approvals.
+- Business inquiries and leads.
+- Listing performance over time.
+- Promotion performance.
+- Inventory organization.
+- Business verification status.
+- Team management if supported.
+- Business profile settings.
+
+### Moderator dashboard
+
+Display:
+
+- Pending moderation queue.
+- Flagged listings.
+- User reports.
+- Open support tickets.
+- Assigned cases.
+- Escalated disputes.
+- Moderation turnaround statistics.
+- Recent moderation actions.
+
+Include filters, case details, evidence viewing, documented decisions, and audit records.
+
+### Administrator dashboard
+
+Display:
+
+- Total registered users.
+- Active and suspended users.
+- Total and active advertisements.
+- Pending moderation.
+- Reported listings.
+- Recent user registrations.
+- Marketplace activity trends.
+- Category distribution.
+- Listing approval and rejection statistics.
+- Recent support issues.
+- Platform announcements.
+- Operational alerts.
+- Audit log shortcuts.
+
+Include date filters and the ability to drill into the underlying records.
+
+### Super administrator dashboard
+
+Provide all authorized administrator capabilities, plus:
+
+- Role and permission management.
+- Administrator management.
+- Security events and audit reviews.
+- System configuration.
+- Feature flags.
+- Integration configuration.
+- Moderation policy settings.
+- Quota and plan management.
+- Protected maintenance operations.
+- Operational health indicators.
+- Backup and recovery status where the infrastructure exposes these.
+- System-wide reports and exports.
+
+Never invent operational health data. Display actual measurements or a clear unavailable state.
+
+## 5. ADVANCED ADMINISTRATION FEATURES
+
+Build a comprehensive admin console with a consistent sidebar, searchable navigation, breadcrumbs, summary cards, data tables, filters, bulk actions, pagination, and detail views.
+
+### User management
+
+Implement:
+
+- Search by name, email, phone, user ID, and business name where permitted.
+- Filter by role, registration date, account status, verification status, and activity.
+- View relevant account profiles.
+- Suspend and reactivate accounts.
+- Apply temporary restrictions.
+- Review user reports and moderation history.
+- Manage verification states.
+- Assign and revoke authorized roles.
+- Record administrative notes with suitable access controls.
+- Export permitted user records.
+- Require confirmation for sensitive actions.
+
+Do not display passwords, authentication tokens, or unnecessary personal information.
+
+### Advertisement management
+
+Implement:
+
+- Search and filter all listings.
+- Review pending, active, rejected, expired, reported, and removed advertisements.
+- View listing content, images, seller details, and moderation history according to permissions.
+- Approve, reject, request edits, suspend, restore, and archive listings.
+- Apply bulk moderation actions.
+- Feature or unfeature eligible listings.
+- Review duplicate or suspicious listings.
+- Manage listing expiry and renewal.
+- Enforce category-specific publishing requirements.
+- Record reasons for moderation decisions.
+
+### Category management
+
+Allow authorized administrators to:
+
+- Create and edit categories.
+- Create nested subcategories.
+- Configure category icons and display ordering.
+- Define required and optional listing fields.
+- Configure supported filters.
+- Activate or deactivate categories.
+- Set appropriate listing limits.
+- Configure category-specific moderation requirements.
+
+Prevent deletion or deactivation from silently breaking existing listings.
+
+### Reports and disputes
+
+Implement:
+
+- Listing reports.
+- User reports.
+- Fraud and impersonation reports.
+- Buyer–seller disputes.
+- Support tickets.
+- Assignment and escalation.
+- Internal notes with access restrictions.
+- Resolution reasons.
+- Status tracking.
+- Audit history.
+- Notifications to affected parties when appropriate.
+
+### Promotions and monetization
+
+Implement an extensible promotional system supporting:
+
+- Featured listings.
+- Boosted advertisements.
+- Highlighted search results.
+- Business promotional packages.
+- Subscription plans if required.
+- Listing quotas.
+- Promotion start and end dates.
+- Campaign performance reporting.
+
+Integrate payment processing only through an approved provider and its documented APIs. Never store raw card details or payment credentials.
+
+For M-Pesa support, design a provider integration layer with transaction references, callback verification, idempotent processing, and payment reconciliation.
+
+Do not simulate successful payments in production.
+
+### Platform configuration
+
+Provide permission-controlled settings for:
+
+- Marketplace name and branding.
+- Contact and support information.
+- Listing duration.
+- Listing quotas.
+- Allowed image types and upload limits.
+- Moderation requirements.
+- Notification templates.
+- Category configuration.
+- Promotional settings.
+- Maintenance notices.
+- Feature flags.
+- Terms and privacy policy links.
+- Permitted third-party integrations.
+
+Validate all configuration changes and record important changes in the audit log.
+
+### Analytics and reports
+
+Include:
+
+- Registration and account activity trends.
+- Active listings by category.
+- Listing publication and rejection trends.
+- Inquiries and engagement.
+- Seller activity.
+- Business storefront performance.
+- Promotional campaign performance.
+- Report resolution time.
+- Date-range filters.
+- CSV export for authorized users.
+
+Use real persisted data. Clearly distinguish zero values from unavailable or loading data.
+
+### Audit logs
+
+Record sensitive operations, including:
+
+- Authentication and security events.
+- Role and permission changes.
+- Account suspensions.
+- Listing moderation decisions.
+- Administrative setting changes.
+- Promotion and plan changes.
+- Sensitive exports.
+- Important support actions.
+
+Include actor, action, target, timestamp, outcome, and relevant contextual metadata. Never log passwords, secrets, session tokens, or unnecessary private content.
+
+Protect audit logs against unauthorized alteration and deletion.
+
+## 6. GRANULAR ROLE AND PERMISSION ENGINE
+
+Implement centralized permissions rather than scattered role-name checks throughout the application.
+
+Use capabilities such as:
+
+- ads.create
+- ads.read.own
+- ads.read.all
+- ads.update.own
+- ads.update.all
+- ads.publish
+- ads.moderate
+- ads.delete.own
+- ads.delete.all
+- users.read
+- users.suspend
+- users.manage_roles
+- categories.manage
+- reports.manage
+- promotions.manage
+- analytics.read
+- settings.manage
+- audit.read
+- permissions.manage
+
+Adapt the exact permission names to the current architecture.
+
+Implement:
+
+- A centralized authorization service.
+- Explicit permission checks for backend operations.
+- Ownership checks for private resources.
+- Least-privilege defaults.
+- Deny-by-default behavior.
+- Server-side validation.
+- Protected API endpoints.
+- Permission-aware navigation and actions.
+- Audit logging for privileged operations.
+- Tests for permitted and denied actions.
+
+A higher role may receive additional capabilities, but role hierarchy alone must not automatically grant access to every resource.
+
+Prevent privilege escalation, insecure direct object references, unauthorized role changes, and cross-user data access.
+
+Where appropriate, require two-person approval for especially sensitive operations such as granting the highest privilege or performing irreversible bulk actions.
+
+## 7. MARKETPLACE CATEGORIES
+
+Implement a flexible category and subcategory system supporting:
+
+1. Phones & Tablets.
+2. Vehicles.
+3. Property & Rentals.
+4. Electronics & Computers.
+5. Home, Furniture & Appliances.
+6. Fashion & Beauty.
+7. Repair, Construction & Hardware.
+8. Agriculture & Food.
+9. Business & Commercial Equipment.
+10. Services.
+11. Babies, Kids & Toys.
+12. Sports, Hobbies & Outdoors.
+13. Animals & Pets.
+14. Jobs & Careers.
+15. Health, Beauty & Personal Care.
+
+Allow administrators to extend this list without code changes wherever the existing architecture permits.
+
+Support category-specific listing fields.
+
+Examples:
+
+- Vehicles: make, model, year, mileage, fuel type, transmission.
+- Property: listing type, bedrooms, property type, location, rent or sale price.
+- Phones: brand, model, storage, condition, warranty.
+- Fashion: size, brand, condition, available colors.
+- Agriculture: item, quantity, unit, location.
+- Jobs: employer, position, employment type, salary range.
+- Services: service type, service area, pricing method.
+
+Apply applicable legal restrictions and moderation policies. Prevent prohibited and unlawful listings.
+
+## 8. LISTING CREATION AND MANAGEMENT
+
+Build a user-friendly, validated advertisement publishing workflow.
+
+Required common fields:
+
+- Listing title.
+- Category and subcategory.
+- Description.
+- Price in KES or an appropriate pricing mode.
+- Condition where applicable.
+- County and town.
+- Images.
+- Seller contact preferences.
+- Negotiability where applicable.
+
+Features:
+
+- Multiple image uploads.
+- Image preview, removal, and ordering.
+- Category-specific fields.
+- Draft saving.
+- Form validation.
+- Preview before publication.
+- Pending moderation states.
+- Editing and resubmission.
+- Expiry and renewal.
+- Duplicate detection where feasible.
+- Accessible upload progress and errors.
+
+Optimize images, validate file types and sizes on the server, and store files securely.
+
+## 9. SEARCH AND DISCOVERY
+
+Improve marketplace search with:
+
+- Full-text search where supported.
+- Category and subcategory filters.
+- County and town filters.
+- Minimum and maximum price.
+- Product condition.
+- Relevant category-specific filters.
+- Sorting by relevance, newest, and price.
+- Pagination.
+- Search suggestions where practical.
+- Clear filters.
+- Helpful no-results states.
+- Shareable search URLs where supported.
+
+Use real listing data. Do not return hardcoded products as actual search results.
+
+## 10. BUYER–SELLER MESSAGING
+
+Implement a secure inquiry system with:
+
+- Listing-linked conversations.
+- Message history.
+- Unread counts.
+- Read states where supported.
+- Notifications.
+- Conversation search.
+- Reporting and blocking.
+- Safe contact-sharing controls.
+- Pagination or efficient message loading.
+- Access limited to conversation participants and authorized support staff.
+
+Protect private conversations from other buyers and sellers.
+
+Do not allow users to manipulate conversation ownership or access another user's messages by changing an ID in a request.
+
+## 11. UI/UX REFINEMENT
+
+Refine the current adBay interface.
+
+### Header
+
+- Keep the adBay logo.
+- Make the search field prominent.
+- Group location and category selectors.
+- Keep "Post an Ad" visually prominent.
+- Reduce unnecessary icons and duplicate navigation.
+- Use a compact account menu.
+
+### Dashboard
+
+- Provide role-specific dashboard content.
+- Improve metric hierarchy.
+- Align cards consistently.
+- Remove unnecessary whitespace.
+- Provide meaningful loading, empty, error, and success states.
+- Make frequently used actions easy to find.
+
+### Product cards
+
+- Use consistent image aspect ratios.
+- Show prices in KES prominently.
+- Display condition, location, and publication metadata where useful.
+- Use accessible favorite buttons.
+- Display featured and promoted labels clearly.
+- Make the listing title and card navigation accessible.
+- Avoid truncated text that prevents users from understanding an item.
+
+### Navigation
+
+- Use active states and breadcrumbs.
+- Group related account and administration links.
+- Avoid duplicate links across multiple menus.
+- Make dropdowns keyboard-accessible.
+- Close menus predictably when focus moves or users click outside.
+
+### Accessibility
+
+- Follow WCAG 2.2 AA as a target.
+- Support keyboard navigation.
+- Provide visible focus indicators.
+- Use semantic HTML and accessible labels.
+- Maintain sufficient color contrast.
+- Provide alternative text for meaningful images.
+- Avoid conveying status through color alone.
+- Respect reduced-motion preferences.
+
+## 12. SECURITY AND PRIVACY
+
+Implement appropriate protections for:
+
+- Authentication and session management.
+- Password hashing using established libraries.
+- Secure password reset.
+- Email or phone verification where supported.
+- Rate limiting.
+- Input validation and output escaping.
+- SQL injection.
+- Cross-site scripting.
+- Cross-site request forgery where applicable.
+- Unauthorized object access.
+- File upload attacks.
+- Spam and abusive messaging.
+- Administrative privilege escalation.
+- Sensitive data exposure.
+- Payment callback forgery.
+
+Use secure server-side authorization and least-privilege database access.
+
+Protect personal data and implement appropriate retention, access, and deletion workflows consistent with applicable Kenyan data-protection requirements.
+
+Never expose API secrets or environment variables in frontend code, browser responses, logs, or source control.
+
+## 13. TECHNICAL IMPLEMENTATION REQUIREMENTS
+
+First inspect the current project and identify:
+
+- Framework and version.
+- Existing frontend and backend architecture.
+- Database and schema.
+- Authentication system.
+- Existing routes and APIs.
+- Current role implementation.
+- Reusable components.
+- Existing marketplace features.
+- Known errors and incomplete workflows.
+
+Then implement improvements incrementally.
+
+Rules:
+
+- Preserve the current technology stack unless a change is necessary.
+- Reuse existing dependencies where practical.
+- Use reusable components and centralized design tokens.
+- Separate presentation, business logic, data access, and authorization.
+- Add database migrations rather than destructive schema replacements.
+- Preserve existing data.
+- Use appropriate indexes and constraints.
+- Implement pagination for large datasets.
+- Add proper loading, error, and empty states.
+- Keep frontend and backend validation consistent.
+- Use environment variables for secrets.
+- Add structured error handling.
+- Document new configuration and integrations.
+
+If the application is currently a frontend prototype, identify the missing backend requirements and implement the supported functionality using the available architecture. Do not claim a complete production backend exists if it does not.
+
+## 14. TESTING AND QUALITY ASSURANCE
+
+Create and run tests for:
+
+### Role-based access
+
+- Guests cannot access private dashboards.
+- Buyers cannot modify other users' advertisements.
+- Sellers cannot moderate their own listings if moderation separation is required.
+- Business sellers cannot access administrative settings.
+- Moderators cannot grant administrator privileges.
+- Administrators cannot perform owner-only operations.
+- Unauthorized users cannot bypass permissions through direct API requests.
+
+### Marketplace functionality
+
+- Create and edit advertisements.
+- Save and unsave listings.
+- Search and filter listings.
+- Upload and remove images.
+- Send and receive inquiries.
+- Enforce listing ownership.
+- Enforce category requirements.
+- Handle moderation decisions.
+
+### UI/UX
+
+- Consistent spacing tokens.
+- Responsive layouts at all specified breakpoints.
+- Accessible menus and forms.
+- No overlapping content.
+- No horizontal overflow.
+- Correct dashboard content for each role.
+- Appropriate empty, loading, error, and success states.
+
+### Administration
+
+- Search, filter, and paginate records.
+- Perform permitted bulk actions.
+- Record sensitive changes.
+- Reject unauthorized settings changes.
+- Prevent privilege escalation.
+- Validate exports and protect sensitive records.
+
+Fix discovered failures rather than simply listing them in a report.
+
+## 15. IMPLEMENTATION WORKFLOW
+
+Work in the following order:
+
+Phase 1: Inspect the current codebase and produce a concise architecture assessment.
+
+Phase 2: Establish the shared design tokens, spacing utilities, typography, responsive containers, and reusable UI components.
+
+Phase 3: Refine the global header, marketplace navigation, dashboard layout, product cards, and account menu.
+
+Phase 4: Implement centralized role-based access control and server-side permission enforcement.
+
+Phase 5: Implement buyer, individual seller, business seller, and moderator dashboards.
+
+Phase 6: Implement advanced administrator and super-administrator functionality.
+
+Phase 7: Improve categories, listing creation, search, saved advertisements, and inventory management.
+
+Phase 8: Implement secure inquiries, notifications, reporting, and moderation workflows.
+
+Phase 9: Integrate supported analytics, promotions, and approved payment-provider interfaces.
+
+Phase 10: Run tests, fix regressions, verify responsive behavior, and document remaining external dependencies.
+
+After each phase, verify that previously working features remain functional.
+
+Do not stop after generating a plan or redesigning the dashboard. Continue implementing the changes in the existing project.
+
+If context or execution limits prevent completion in one pass, finish the current phase cleanly, document completed work and remaining tasks, and continue from that point without duplicating completed work.
+
+## 16. DEFINITION OF DONE
+
+The project is complete only when:
+
+1. The existing application has been inspected and upgraded.
+2. Shared design tokens enforce the 5px spacing scale and 3px standard margin utility.
+3. The interface works across desktop, tablet, and mobile.
+4. Every role sees an appropriate dashboard.
+5. Unauthorized features are hidden or disabled appropriately.
+6. Backend permissions independently enforce every protected action.
+7. Administration includes functional user, listing, category, moderation, report, and settings workflows.
+8. Marketplace listings use real persisted data.
+9. Search, saved ads, inventory, and messaging work end to end where supported.
+10. Sensitive operations are validated, permission-controlled, and audited.
+11. Tests cover critical marketplace and security workflows.
+12. Existing user data and working functionality are preserved.
+13. There are no known critical authorization failures or broken primary workflows.
+14. External services that require credentials are documented rather than falsely reported as integrated.
+15. A final report explains implemented features, tests performed, migration steps, and any remaining limitations.
+
+**FINAL INSTRUCTION:** Start by examining the existing adBay project. Implement these improvements directly in the current application. Prioritize working functionality, role security, consistent design, and maintainable architecture over decorative UI. Do not replace real functionality with mock data or claim that unimplemented features are complete.
