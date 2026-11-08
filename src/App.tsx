@@ -197,7 +197,7 @@ const MainLayout: React.FC = () => {
 
       {/* Overlaid Modals */}
       {activeListingId && <ListingDetailModal />}
-      <PostAdModal />
+      {isPostAdOpen && <PostAdModal />}
       <LocationPickerModal />
       <PromoteAdModal />
       <AuthModal />

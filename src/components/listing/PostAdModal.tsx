@@ -61,6 +61,11 @@ export const PostAdModal: React.FC = () => {
   const [model, setModel] = useState('');
   const [colorAttr, setColorAttr] = useState('');
 
+  // Client-side Canvas image optimization utility (resizes & compresses for fast mobile upload)
+  // NOTE: all hooks must be declared before the early return below, otherwise React
+  // crashes with "Rendered more hooks than during the previous render" when the modal opens.
+  const [isCompressingImages, setIsCompressingImages] = useState(false);
+
   if (!isPostAdOpen) return null;
 
   const currentCategory = categories.find((c) => c.id === categoryId);
@@ -91,8 +96,6 @@ export const PostAdModal: React.FC = () => {
     setImages((prev) => prev.filter((_, i) => i !== index));
   };
 
-  // Client-side Canvas image optimization utility (resizes & compresses for fast mobile upload)
-  const [isCompressingImages, setIsCompressingImages] = useState(false);
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
